@@ -1,9 +1,10 @@
 /* Variables de color basadas en tus imágenes */
 :root {
     --color-primary: #9933CC; /* Morado/Fucsia principal */
-    --color-light: #F8F0FC; /* Fondo de botones claro */
+    --color-light: #F8F0FC; /* Fondo de botones claro/Lavanda */
     --color-text-dark: #333;
     --color-text-medium: #6c757d;
+    --color-btn-dark: #7a29a3; /* Tono más oscuro para hover */
 }
 
 body {
@@ -32,7 +33,7 @@ header {
 }
 
 .logo-img {
-    width: 100px; /* Tamaño del logo */
+    width: 80px; /* TAMAÑO AJUSTADO */
     height: auto;
     margin-bottom: 10px;
 }
@@ -116,7 +117,7 @@ h2 {
 }
 
 .next-step-btn:hover:not(:disabled), #submit-form:hover:not(:disabled) {
-    background-color: #7a29a3; /* Tono ligeramente más oscuro */
+    background-color: var(--color-btn-dark);
 }
 
 .prev-step-btn {
@@ -140,32 +141,6 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* Campos de Formulario */
-label {
-    display: block;
-    margin-top: 15px;
-    margin-bottom: 5px;
-    font-weight: 600;
-    font-size: 0.95em;
-    color: var(--color-text-dark);
-}
-
-input[type="text"], input[type="email"], input[type="date"], textarea, select {
-    width: 100%;
-    padding: 12px;
-    margin-top: 5px;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    box-sizing: border-box;
-    font-size: 1em;
-}
-
-input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px var(--color-light);
-}
-
 /* Opciones de Procedimiento (Paso 1 y condicionales) */
 .procedure-options label {
     display: block;
@@ -179,21 +154,18 @@ input:focus, select:focus, textarea:focus {
 }
 
 .procedure-options input[type="radio"] {
-    margin-right: 15px;
+    display: none; /* Ocultamos el radio button nativo */
 }
 
-.procedure-options label:hover {
-    background-color: var(--color-light);
-}
-
-input[type="radio"]:checked + label {
+.procedure-options input[type="radio"]:checked + label {
     background-color: var(--color-light);
     border-color: var(--color-primary);
     color: var(--color-primary);
     font-weight: bold;
 }
-input[type="radio"] {
-    display: none; /* Ocultamos el radio button nativo */
+
+.procedure-options label:hover {
+    background-color: var(--color-light);
 }
 
 /* Caja de Info Final */
@@ -206,4 +178,20 @@ input[type="radio"] {
     font-weight: bold;
     color: var(--color-primary);
     font-size: 1.1em;
+}
+
+/* Estilos específicos para el paso final (Exit) */
+.home-btn {
+    display: block;
+    width: 100%;
+    padding: 15px 20px;
+    margin-top: 30px;
+    text-align: center;
+    text-decoration: none;
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: 8px;
+}
+.home-btn:hover {
+    background-color: var(--color-btn-dark);
 }
