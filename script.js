@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextButtons = document.querySelectorAll('.next-step-btn');
     const optionButtons = document.querySelectorAll('.option-btn');
     const submitButton = document.getElementById('submit-form');
-    const prevButtons = document.querySelectorAll('.prev-step-btn'); // NUEVO: Botones Regresar
+    const prevButtons = document.querySelectorAll('.prev-step-btn');
     
     const progressBarFill = document.getElementById('progress-fill');
     
@@ -19,22 +19,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentStep = 1;
     let userSelections = {
-        procedimiento: null,
-        genero_tipo: null, 
-        asistencia: null, 
-        especifico: null,
-        timing: null,
-        nombre: '',
-        correo: '',
-        celular: '',
-        horario_sugerido: ''
+        procedimiento: null, genero_tipo: null, asistencia: null, especifico: null,
+        timing: null, nombre: '', correo: '', celular: '', horario_sugerido: ''
     };
 
     // --- DEFINICIÓN DE FLUJOS CONDICIONALES (El mismo código de lógica) ---
-
     const flows = {
-        // PASO 2: Género/Tipo
-        gender_type: {
+        gender_type: { /* (Contenido idéntico al anterior) */
             endolift: { title: "Seleccionaste Endolift, ¿podrías indicarme lo siguiente?", options: [
                 { text: "Hombre", value: "hombre" }, { text: "Mujer", value: "mujer" }, { text: "Consulta", value: "consulta" }
             ]},
@@ -52,8 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { text: "Hombre", value: "hombre" }, { text: "Mujer", value: "mujer" }
             ]}
         },
-        // PASO 4: Detalle Específico
-        specific_detail: {
+        specific_detail: { /* (Contenido idéntico al anterior) */
             endolift: { 
                 hombre: { title: "Seleccionaste Endolift (Hombre), ¿podrías indicarme lo siguiente?", options: [
                     { text: "Facial", value: "facial" }, { text: "Corporal", value: "corporal" }, { text: "Consulta", value: "consulta" }
@@ -126,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Lógica para botones "Regresar" (NUEVO BLOQUE)
+    // Lógica para botones "Regresar"
     prevButtons.forEach(button => {
         button.addEventListener('click', () => {
             const prevStep = button.getAttribute('data-prev');
@@ -134,15 +124,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 const prevStepNum = parseInt(prevStep);
                 showStep(prevStepNum);
 
-                // IMPORTANTE: Si regresamos a un paso condicional (P2 o P4),
-                // debemos re-habilitar los botones de opción y el botón CONTINUAR.
+                // IMPORTANTE: Resetear estados de botones al retroceder
                 if (prevStepNum === 2) {
                     step2NextBtn.disabled = false;
                     document.querySelectorAll('#step2-gender-content button').forEach(btn => btn.disabled = false);
+                    document.querySelectorAll('#step2-gender-content button').forEach(btn => btn.classList.remove('selected'));
                 }
                 if (prevStepNum === 4) {
                     step4NextBtn.disabled = false;
                     document.querySelectorAll('#step4-detail-content button').forEach(btn => btn.disabled = false);
+                    document.querySelectorAll('#step4-detail-content button').forEach(btn => btn.classList.remove('selected'));
                 }
             }
         });
@@ -179,19 +170,35 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', (e) => {
             const currentStepId = parseInt(button.closest('.form-step').dataset.step);
             
-            if (currentStepId === 3) { // Paso 3: Asistencia
+            if (currentStepId === 3) { // Paso 3: Asistencia (Avance automático)
                 userSelections.asistencia = button.dataset.assist === 'true';
                 showStep(userSelections.asistencia ? 4 : 7); 
             } 
             else if (currentStepId === 2) { // Paso 2: Género/Tipo
+                // Habilitación de avance
                 userSelections.genero_tipo = e.currentTarget.dataset.value;
                 step2NextBtn.disabled = false;
-                document.querySelectorAll('#step2-gender-content button').forEach(btn => btn.disabled = (btn !== e.currentTarget));
+                
+                // Aplicar estilo de seleccionado y deshabilitar otros
+                document.querySelectorAll('#step2-gender-content button').forEach(btn => {
+                    btn.disabled = (btn !== e.currentTarget);
+                    btn.classList.remove('selected');
+                });
+                e.currentTarget.classList.add('selected');
+                e.currentTarget.disabled = false; // Asegurar que el seleccionado NO se deshabilite visualmente
             } 
             else if (currentStepId === 4) { // Paso 4: Detalle Específico
+                // Habilitación de avance
                 userSelections.especifico = e.currentTarget.dataset.value;
                 step4NextBtn.disabled = false;
-                document.querySelectorAll('#step4-detail-content button').forEach(btn => btn.disabled = (btn !== e.currentTarget));
+                
+                // Aplicar estilo de seleccionado y deshabilitar otros
+                document.querySelectorAll('#step4-detail-content button').forEach(btn => {
+                    btn.disabled = (btn !== e.currentTarget);
+                    btn.classList.remove('selected');
+                });
+                e.currentTarget.classList.add('selected');
+                e.currentTarget.disabled = false; // Asegurar que el seleccionado NO se deshabilite visualmente
             }
         });
     });
