@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turnos Dra. Muller - Medicina Estética</title>
+    <title>Turnos Dra. Müller</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,83 +11,90 @@
     <div class="form-container">
         
         <header>
-            <h1>Medicina Müller</h1>
-            <p>Turnos y Evaluación Médica</p>
+            <img src="LOGO.jpg" alt="Logo Medicina Müller" class="logo-img">
+            <p>Medicina Müller | Medicina Regenerativa, Funcional y de Precisión</p>
         </header>
+
+        <div class="progress-bar-container">
+            <div id="progress-fill" class="progress-fill"></div>
+        </div>
 
         <div class="form-step active" data-step="1">
             <h2>¿Qué procedimiento te interesa?</h2>
-            <p>Selecciona el área o tratamiento principal de tu consulta.</p>
             
             <div class="procedure-options">
-                <label><input type="radio" name="procedimiento" value="1" required> 1. Endolift (Lifting sin cirugía) y/o Reductor de Adiposidades</label>
-                <label><input type="radio" name="procedimiento" value="2"> 2. Pellets (Terapia de reemplazo hormonal)</label>
-                <label><input type="radio" name="procedimiento" value="3"> 3. Implante Capilar</label>
-                <label><input type="radio" name="procedimiento" value="4"> 4. Bioestimulación, Botox, Relleno</label>
-                <label><input type="radio" name="procedimiento" value="5"> 5. Exosomas (Piel, Capilar, Rejuvenecimiento Vaginal)</label>
+                <label><input type="radio" name="procedimiento" value="endolift" required> Endolift (Lifting sin cirugía)</label>
+                <label><input type="radio" name="procedimiento" value="pellets"> Pellets (Terapia de Reemplazo Hormonal)</label>
+                <label><input type="radio" name="procedimiento" value="capilar"> Implante Capilar</label>
+                <label><input type="radio" name="procedimiento" value="bioestimulacion"> Bioestimulación (Botox, Relleno)</label>
+                <label><input type="radio" name="procedimiento" value="exosomas"> Exosomas (Células Madres)</label>
             </div>
             
-            <p>Una vez seleccionado, procederás a la reserva y pago de la consulta.</p>
-            
-            <button class="next-step-btn" data-next="3">Continuar →</button> 
+            <button class="next-step-btn" data-next="2">CONTINUAR →</button>
         </div>
 
         <div class="form-step" data-step="2">
-            <h2>Información de Ubicación</h2>
-            <p>Nuestros tratamientos requieren atención presencial en nuestra clínica.</p>
-            <p class="location">**[Aquí debes poner la dirección real de la Dra. Muller]**</p>
-            <button class="prev-step-btn" data-prev="1">← Regresar</button>
-            <button class="next-step-btn" data-next="3">Continuar →</button>
+            <h2>¿Puedes asistir a nuestra clínica?</h2>
+            <p>Puedes asistir a nuestra clínica en **Galería Nodo, Yerba Buena**?</p>
+            
+            <button class="option-btn" data-next="3" data-assist="true">Sí, puedo asistir</button>
+            <button class="option-btn" data-next="6" data-assist="false">No, me queda muy lejos</button>
         </div>
-        
+
         <div class="form-step" data-step="3">
-            <h2>Precios y Reserva</h2>
-            <div class="payment-info">
-                <h4>IMPORTANTE: PAGO ANTICIPADO REQUERIDO</h4>
-                <p>Para confirmar tu cita es **obligatorio** realizar un pago anticipado de **[AQUÍ PONER MONTO REAL]**.</p>
-                <p>Este pago corresponde al costo de la consulta de evaluación.</p>
+            <h2>¿Cuándo te gustaría realizarte el procedimiento?</h2>
+            
+            <div class="procedure-options">
+                <label><input type="radio" name="timing" value="urgente" required> Lo antes posible</label>
+                <label><input type="radio" name="timing" value="3meses"> En los próximos 3 meses</label>
+                <label><input type="radio" name="timing" value="6meses"> En los próximos 6 meses</label>
+                <label><input type="radio" name="timing" value="explorando"> Solo estoy explorando opciones</label>
             </div>
-            <button class="prev-step-btn" data-prev="1">← Regresar</button>
-            <button class="next-step-btn" data-next="4">Ver disponibilidad</button>
+            
+            <button class="next-step-btn" data-next="4">CONTINUAR →</button>
         </div>
 
         <div class="form-step" data-step="4">
-            <h2>Agenda tu consulta</h2>
-            
-            <h4>Selecciona una fecha</h4>
-            <input type="date" id="date-select" required>
-
-            <h4>Selecciona una hora</h4>
-            <select id="time-select" required>
-                <option value="">Selecciona primero una fecha</option>
-            </select>
-            
-            <p class="summary">Tu cita: <span id="cita-summary">Selecciona una fecha y hora</span></p>
-
-            <button class="prev-step-btn" data-prev="3">← Regresar</button>
-            <button class="next-step-btn" data-next="5" disabled id="continue-step4">Continuar →</button>
+            <h2 id="step4-title"></h2>
+            <div id="step4-content">
+                </div>
+            <button class="next-step-btn" data-next="5" id="step4-next-btn" disabled>CONTINUAR →</button>
         </div>
 
         <div class="form-step" data-step="5">
-            <h2>Completa tus Datos</h2>
+            <h2>Podrías dejarnos tus Datos así nos ponemos en contacto?</h2>
             
-            <label for="whatsapp">Número de WhatsApp (incluye código de área)</label>
-            <input type="text" id="whatsapp" placeholder="Ej: 549381XXXXXXX" required>
+            <label for="name">Nombre y Apellido:</label>
+            <input type="text" id="name" required>
 
-            <label for="name">Nombre y Apellido</label>
-            <input type="text" id="name" placeholder="Tu Nombre Completo" required>
+            <label for="correo">Correo:</label>
+            <input type="email" id="correo" required>
 
-            <label for="query">Si seleccionaste Botox/Relleno: ¿Qué quieres mejorar? (Ej: 1/3 Superior, Cuello, etc.)</label>
-            <textarea id="query" rows="3"></textarea>
+            <label for="celular">Celular:</label>
+            <input type="text" id="celular" placeholder="Ej: 381XXXXXXX" required>
 
-            <div class="checkbox-group">
-                <input type="checkbox" id="payment-policy" required>
-                <label for="payment-policy">Entiendo que si no pago el costo de mi cita ahora, pierdo la reserva para la fecha y hora seleccionada</label>
+            <label for="horario-sugerido">Horarios Sugerido para contacto:</label>
+            <input type="text" id="horario-sugerido">
+
+            <div class="info-box">
+                Más Información: 3815239064
             </div>
 
-            <button class="prev-step-btn" data-prev="4">← Regresar</button>
-            <button type="submit" id="pay-button" disabled>PAGAR CITA Y RESERVAR →</button>
+            <button type="submit" id="submit-form" disabled>ENVIAR SOLICITUD →</button>
         </div>
+
+        <div class="form-step" data-step="6">
+            <h2>Gracias por tu interés.</h2>
+            <p>Dado que la clínica te queda lejos, agradecemos tu consulta. Te enviaremos información general por correo electrónico o WhatsApp si nos dejas tus datos en el paso anterior.</p>
+            <button class="prev-step-btn" data-prev="2">Volver a Intentar</button>
+        </div>
+
+        <div class="form-step" data-step="7">
+            <h2>¡Solicitud Enviada!</h2>
+            <p>Gracias por completar el formulario. Nos pondremos en contacto contigo a la brevedad.</p>
+            <a href="/" class="home-btn">Volver al inicio</a>
+        </div>
+
     </div>
 
     <script src="script.js"></script>
