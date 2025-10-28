@@ -6,34 +6,34 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const progressBarFill = document.getElementById('progress-fill');
     
-    // Controles del Paso 4 (Género/Tipo)
-    const step4GenderTitle = document.getElementById('step4-gender-title');
-    const step4GenderContent = document.getElementById('step4-gender-content');
-    const step4NextBtn = document.getElementById('step4-next-btn');
+    // Controles del Paso 3 (Género/Tipo) - ANTES PASO 4
+    const step3GenderTitle = document.getElementById('step3-gender-title');
+    const step3GenderContent = document.getElementById('step3-gender-content');
+    const step3NextBtn = document.getElementById('step3-next-btn');
 
-    // Controles del Paso 5 (Detalle Específico)
-    const step5DetailTitle = document.getElementById('step5-detail-title');
-    const step5DetailContent = document.getElementById('step5-detail-content');
-    const step5NextBtn = document.getElementById('step5-next-btn');
+    // Controles del Paso 4 (Detalle Específico) - ANTES PASO 5
+    const step4DetailTitle = document.getElementById('step4-detail-title');
+    const step4DetailContent = document.getElementById('step4-detail-content');
+    const step4NextBtn = document.getElementById('step4-next-btn');
 
     // Estado del formulario
     let currentStep = 1;
     let userSelections = {
         procedimiento: null,
         asistencia: null,
-        timing: null,
-        genero_tipo: null, // Nuevo: Paso 4
-        especifico: null,  // Paso 5
+        genero_tipo: null, 
+        especifico: null,
+        timing: null, // Ahora en el paso 5
         nombre: '',
         correo: '',
         celular: '',
         horario_sugerido: ''
     };
 
-    // --- DEFINICIÓN DE FLUJOS CONDICIONALES (La lógica principal) ---
+    // --- DEFINICIÓN DE FLUJOS CONDICIONALES (Misma lógica, solo cambia el nombre de las variables) ---
 
     const flows = {
-        // PASO 4: Género/Tipo (después de seleccionar el procedimiento)
+        // PASO 3: Género/Tipo
         gender_type: {
             endolift: { title: "Seleccionaste Endolift, ¿podrías indicarme lo siguiente?", options: [
                 { text: "Hombre", value: "hombre" }, { text: "Mujer", value: "mujer" }, { text: "Consulta", value: "consulta" }
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { text: "Hombre", value: "hombre" }, { text: "Mujer", value: "mujer" }
             ]}
         },
-        // PASO 5: Detalle Específico (depende de P1 Y P4)
+        // PASO 4: Detalle Específico
         specific_detail: {
             endolift: {
                 hombre: { title: "Seleccionaste Endolift (Hombre), ¿podrías indicarme lo siguiente?", options: [
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     { text: "Capilar", value: "capilar" }, { text: "Piel", value: "piel" }, { text: "Rejuvenecimiento Vaginal", value: "vaginal" }, { text: "Consulta", value: "consulta" }
                 ]}
             },
-            bioestimulacion: { // Bioestimulación es más simple en tus capturas
+            bioestimulacion: {
                 hombre: { title: "Bioestimulación, ¿quieres mejorar?", options: [
                     { text: "1/3 Superior", value: "1_superior" }, { text: "1/3 Medio", value: "1_medio" }, { text: "1/3 Inferior", value: "1_inferior" }, 
                     { text: "1/3 Cuello", value: "1_cuello" }, { text: "1/3 Escote", value: "1_escote" }, { text: "Consulta", value: "consulta" }
@@ -92,8 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     { text: "1/3 Cuello", value: "1_cuello" }, { text: "1/3 Escote", value: "1_escote" }, { text: "Consulta", value: "consulta" }
                 ]}
             },
-            capilar: { // Capilar depende del valor del Paso 4
-                 // Los valores del paso 4 son: primera_consulta, implante_previo, terapias_previas, consulta
+            capilar: {
                  primera_consulta: { title: "Primera Consulta Capilar: ¿Qué zona es la principal preocupación?", options: [
                     { text: "Coronilla", value: "coronilla" }, { text: "Entradas", value: "entradas" }, { text: "General", value: "general" }
                 ]},
@@ -113,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- FUNCIONES DE UTILIDAD ---
 
     function updateProgress() {
-        // Total de 6 pasos antes del envío (1, 2, 3, 4, 5, 6)
         const totalSteps = 6; 
         const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
         progressBarFill.style.width = `${Math.min(100, progress)}%`;
@@ -129,18 +127,18 @@ document.addEventListener('DOMContentLoaded', () => {
             currentStep = stepNumber;
             updateProgress();
             
-            if (stepNumber === 4) {
-                loadStep4();
+            if (stepNumber === 3) { // Nuevo: Cargar Paso 3 (Género/Tipo)
+                loadStep3();
             }
-            if (stepNumber === 5) {
-                loadStep5();
+            if (stepNumber === 4) { // Nuevo: Cargar Paso 4 (Detalle Específico)
+                loadStep4();
             }
         }
     }
 
     // --- LÓGICA DE NAVEGACIÓN Y DATOS ---
 
-    // Maneja botones de un solo click (Paso 1, 2, 3)
+    // Maneja botones de un solo click (Paso 1, 5)
     nextButtons.forEach(button => {
         button.addEventListener('click', () => {
             const stepId = parseInt(button.closest('.form-step').dataset.step);
@@ -154,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 userSelections.procedimiento = selectedRadio.value;
             }
             
-            if (stepId === 3) { // Paso 3: Timing
+            if (stepId === 5) { // Paso 5: Timing (Nuevo orden)
                 const selectedTiming = document.querySelector('input[name="timing"]:checked');
                 if (!selectedTiming) {
                     alert("Por favor, indica cuándo te gustaría realizar el procedimiento.");
@@ -162,60 +160,62 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 userSelections.timing = selectedTiming.value;
             }
-
+            
             if (button.dataset.next) {
                 showStep(parseInt(button.dataset.next));
             }
         });
     });
 
-    // Maneja botones de opción (Paso 2, 4, 5)
+    // Maneja botones de opción (Paso 2, 3, 4)
     optionButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             const currentStepId = parseInt(button.closest('.form-step').dataset.step);
             
             if (currentStepId === 2) { // Paso 2: Asistencia
                 userSelections.asistencia = button.dataset.assist === 'true';
-                // Si dice NO (asistencia=false), salta al paso 7 (informativo de salida)
                 showStep(userSelections.asistencia ? 3 : 7); 
-            } else if (currentStepId === 4) { // Paso 4: Género/Tipo
+            } 
+            // CORRECCIÓN CLAVE: El avance de P3 y P4 lo manejan los botones next-step-btn
+            // Aquí solo guardamos la selección y habilitamos el botón de avance.
+            else if (currentStepId === 3) { // Paso 3: Género/Tipo
                 userSelections.genero_tipo = e.currentTarget.dataset.value;
-                step4NextBtn.disabled = false;
-                // Deshabilitar el resto de botones en el paso 4
-                document.querySelectorAll('#step4-gender-content button').forEach(btn => btn.disabled = true);
-            } else if (currentStepId === 5) { // Paso 5: Detalle Específico
+                step3NextBtn.disabled = false;
+                // Deshabilitar el resto de botones para forzar la selección única
+                document.querySelectorAll('#step3-gender-content button').forEach(btn => btn.disabled = true);
+                e.currentTarget.disabled = false; // El seleccionado debe permanecer habilitado
+            } else if (currentStepId === 4) { // Paso 4: Detalle Específico
                 userSelections.especifico = e.currentTarget.dataset.value;
-                step5NextBtn.disabled = false;
-                // Deshabilitar el resto de botones en el paso 5
-                document.querySelectorAll('#step5-detail-content button').forEach(btn => btn.disabled = true);
+                step4NextBtn.disabled = false;
+                // Deshabilitar el resto de botones
+                document.querySelectorAll('#step4-detail-content button').forEach(btn => btn.disabled = true);
+                e.currentTarget.disabled = false;
             }
         });
     });
-
-    // --- Lógica Paso 4 (Género/Tipo) ---
-    function loadStep4() {
-        step4GenderContent.innerHTML = '';
-        step4NextBtn.disabled = true;
+    
+    // --- Lógica Paso 3 (Género/Tipo) ---
+    function loadStep3() {
+        step3GenderContent.innerHTML = '';
+        step3NextBtn.disabled = true; // Deshabilitar por defecto al cargar
         
         const flow = flows.gender_type[userSelections.procedimiento];
-        step4GenderTitle.textContent = flow.title;
+        step3GenderTitle.textContent = flow.title;
         
         flow.options.forEach(opt => {
             const button = document.createElement('button');
             button.className = 'option-btn';
             button.textContent = opt.text;
             button.dataset.value = opt.value;
-            button.addEventListener('click', (e) => {
-                optionButtons[0].onclick(e); // Ejecuta la lógica de optionButtons para Paso 4
-            });
-            step4GenderContent.appendChild(button);
+            button.addEventListener('click', optionButtons[0].onclick); // Reusa la lógica de optionButtons
+            step3GenderContent.appendChild(button);
         });
     }
 
-    // --- Lógica Paso 5 (Detalle Específico) ---
-    function loadStep5() {
-        step5DetailContent.innerHTML = '';
-        step5NextBtn.disabled = true;
+    // --- Lógica Paso 4 (Detalle Específico) ---
+    function loadStep4() {
+        step4DetailContent.innerHTML = '';
+        step4NextBtn.disabled = true; // Deshabilitar por defecto al cargar
 
         const flowKey1 = userSelections.procedimiento;
         const flowKey2 = userSelections.genero_tipo;
@@ -223,30 +223,26 @@ document.addEventListener('DOMContentLoaded', () => {
         let flow;
         
         if (flowKey1 === 'capilar' && flows.specific_detail.capilar[flowKey2]) {
-            // Caso especial: Capilar depende directamente del valor del Paso 4
             flow = flows.specific_detail.capilar[flowKey2];
         } else if (flows.specific_detail[flowKey1] && flows.specific_detail[flowKey1][flowKey2]) {
-            // Casos generales: Endolift, Pellets, Exosomas, Bio
             flow = flows.specific_detail[flowKey1][flowKey2];
         } else {
-            // Si no encuentra una rama específica (ej. si P4 era "consulta"), avanza simple
-            step5DetailTitle.textContent = "Confirmación";
-            step5DetailContent.innerHTML = `<p>Confirmaste tu interés en ${userSelections.procedimiento} (${userSelections.genero_tipo}).</p>`;
-            step5NextBtn.disabled = false;
+            // Manejar caso donde el paso 4 no necesita detalle extra (ej. consulta)
+            step4DetailTitle.textContent = "Confirmación";
+            step4DetailContent.innerHTML = `<p>Continuar para el siguiente paso.</p>`;
+            step4NextBtn.disabled = false;
             return;
         }
         
-        step5DetailTitle.textContent = flow.title;
+        step4DetailTitle.textContent = flow.title;
         
         flow.options.forEach(opt => {
             const button = document.createElement('button');
             button.className = 'option-btn';
             button.textContent = opt.text;
             button.dataset.value = opt.value;
-            button.addEventListener('click', (e) => {
-                optionButtons[0].onclick(e); // Ejecuta la lógica de optionButtons para Paso 5
-            });
-            step5DetailContent.appendChild(button);
+            button.addEventListener('click', optionButtons[0].onclick); // Reusa la lógica de optionButtons
+            step4DetailContent.appendChild(button);
         });
     }
 
