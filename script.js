@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const prevStepNum = parseInt(prevStep);
                 showStep(prevStepNum);
 
-                // Resetear estado de botones al retroceder
+                // Resetear estado de botones del Paso 2 al retroceder
                 if (prevStepNum === 2) {
                     step2NextBtn.disabled = true; 
                     document.querySelectorAll('#step2-detail-content button').forEach(btn => {
@@ -153,18 +153,18 @@ document.addEventListener('DOMContentLoaded', () => {
             // Aplicar estilo de seleccionado (clase 'selected') y deshabilitar/actualizar estado
             document.querySelectorAll('#step2-detail-content button').forEach(btn => {
                 btn.disabled = (btn !== target);
-                btn.classList.remove('selected');
+                btn.classList.remove('selected'); 
             });
             target.classList.add('selected');
             target.disabled = false;
         }
     });
 
+
     // --- PARTE CLAVE DEL ENVÍO: Actualiza los campos ocultos ---
     function updateHiddenFields() {
         // Recolectar valores seleccionados
         const selectedProc = document.querySelector('input[name="procedimiento"]:checked').closest('label').textContent.trim();
-        // Usamos el operador ?. para manejar el caso en que no haya nada seleccionado
         const selectedDet = document.querySelector('#step2-detail-content button.selected')?.textContent.trim() || 'No especificado';
         const selectedTiming = document.querySelector('input[name="timing"]:checked')?.closest('label')?.textContent.trim() || 'No especificado';
 
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formDetalle.value = selectedDet;
         formTiming.value = selectedTiming;
         
-        // Configurar redirección (para mostrar nuestra página de éxito)
+        // Configurar redirección
         const userDomain = window.location.origin + window.location.pathname;
         formRedirect.value = userDomain + "?step=7";
 
@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         submitButton.disabled = !allFilled;
     }
-    
+
     // Envío a Web3Forms
     document.getElementById('web3forms-form').addEventListener('submit', async function (e) {
         e.preventDefault();

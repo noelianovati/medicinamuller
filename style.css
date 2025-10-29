@@ -94,6 +94,9 @@ h2 {
     text-align: center;
     font-weight: 500;
     
+    /* AUMENTO DE FUENTE */
+    font-size: 1.1em;
+
     /* Estilo inicial: Morado claro con borde morado */
     background-color: var(--color-light);
     color: var(--color-primary);
@@ -145,7 +148,6 @@ h2 {
 .option-btn.selected {
     background-color: var(--color-primary);
     color: white;
-    /* Agregar un pequeño efecto para notar la selección */
     box-shadow: 0 0 0 3px rgba(153, 51, 204, 0.5); 
 }
 
