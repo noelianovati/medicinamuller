@@ -3,18 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextButtons = document.querySelectorAll('.next-step-btn');
     const submitButton = document.getElementById('submit-form');
     const prevButtons = document.querySelectorAll('.prev-step-btn');
+    const radioGroups = document.querySelectorAll('.button-options-group');
     
     const progressBarFill = document.getElementById('progress-fill');
     
     // Controles del Paso 2 (Detalle Específico)
     const step2DetailTitle = document.getElementById('step2-detail-title');
     const step2DetailContent = document.getElementById('step2-detail-content');
-    const step2NextBtn = document.getElementById('step2-next-btn'); // Botón CONTINUAR del paso 2
-
-    // Controles del Paso 4 (Detalle Específico, ahora es el paso 4)
-    const step4DetailTitle = document.getElementById('step4-detail-title');
-    const step4DetailContent = document.getElementById('step4-detail-content');
-    const step4NextBtn = document.getElementById('step4-next-btn');
+    const step2NextBtn = document.getElementById('step2-next-btn');
 
     // Campos ocultos para el envío
     const formProcedimiento = document.getElementById('form-procedimiento');
@@ -28,7 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
         nombre: '', correo: '', celular: '', horario_sugerido: ''
     };
 
-    // --- FLUJOS CONDICIONALES (Igual que antes) ---
+    // --- FLUJOS CONDICIONALES (Mismo contenido) ---
+
     const flows = {
         specific_detail: {
             endolift: { title: "Seleccionaste Endolift, ¿podrías indicarme lo siguiente?", options: [
@@ -85,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const prevStepNum = parseInt(prevStep);
                 showStep(prevStepNum);
 
-                // Resetear estados de botones al retroceder
                 if (prevStepNum === 2) {
                     step2NextBtn.disabled = true; 
                     document.querySelectorAll('#step2-detail-content button').forEach(btn => {
@@ -100,11 +96,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- LÓGICA DE NAVEGACIÓN Y DATOS ---
 
-    // Maneja botones de avance (Paso 1, 4)
+    // Maneja botones de avance
     nextButtons.forEach(button => {
         button.addEventListener('click', () => {
             const stepId = parseInt(button.closest('.form-step').dataset.step);
             
+            // Validaciones
             if (stepId === 1) { 
                 const selectedRadio = document.querySelector('input[name="procedimiento"]:checked');
                 if (!selectedRadio) { alert("Por favor, selecciona un procedimiento."); return; }
@@ -147,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // DELEGACIÓN DE EVENTOS para Paso 2 (CORRECCIÓN CLAVE)
+    // Delegado de Eventos para Paso 2 (CORRECCIÓN CRÍTICA)
     step2DetailContent.addEventListener('click', (e) => {
         const target = e.target.closest('.option-btn');
         if (target && !target.disabled) {
@@ -157,12 +154,13 @@ document.addEventListener('DOMContentLoaded', () => {
             // Aplicar estilo de seleccionado (clase 'selected') y deshabilitar/actualizar estado
             document.querySelectorAll('#step2-detail-content button').forEach(btn => {
                 btn.disabled = (btn !== target);
-                btn.classList.remove('selected');
+                btn.classList.remove('selected'); 
             });
             target.classList.add('selected');
             target.disabled = false;
         }
     });
+
 
     // --- PARTE CLAVE DEL ENVÍO: Actualiza los campos ocultos ---
     function updateHiddenFields() {
@@ -180,15 +178,53 @@ document.addEventListener('DOMContentLoaded', () => {
         const userDomain = window.location.origin + window.location.pathname;
         formRedirect.value = userDomain + "?step=7";
 
-        // Habilitar botón de submit después de configurar listeners de input
+        // Habilitar el botón de submit
         const contactInputs = ['name', 'correo', 'celular'];
         contactInputs.forEach(id => {
             document.getElementById(id).addEventListener('input', checkSubmitValidity);
         });
-        checkSubmitValidity();
+        checkSubmitValidity(); 
     }
 
-    // --- Lógica Paso 5 (Datos de Contacto y Envío) ---
+    // --- Lógica de Envío Web3Forms ---
+    document.getElementById('web3forms-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        
+        // Deshabilitar botón para evitar doble click
+        submitButton.disabled = true;
+        submitButton.textContent = 'Enviando...';
+        
+        const formData = new FormData(e.target);
+        
+        try {
+            const response = await fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                // Éxito: Mostrar pantalla de éxito (Paso 7)
+                showStep(7);
+            } else {
+                // Fallo: Mostrar un mensaje de error y re-habilitar
+                console.error('Error de envío:', response.statusText);
+                alert('Hubo un error al enviar el formulario. Por favor, inténtalo de nuevo.');
+                submitButton.disabled = false;
+                submitButton.textContent = 'ENVIAR SOLICITUD →';
+            }
+        } catch (error) {
+            // Fallo de red
+            console.error('Error de red:', error);
+            alert('Error de conexión. Por favor, revisa tu conexión a internet.');
+            submitButton.disabled = false;
+            submitButton.textContent = 'ENVIAR SOLICITUD →';
+        }
+    });
+
+    // --- Lógica Paso 5 (Validación de Contacto) ---
     function checkSubmitValidity() {
         const contactInputs = ['name', 'correo', 'celular'];
         const allFilled = contactInputs.every(id => {

@@ -64,9 +64,13 @@
             <button class="next-step-btn" data-next="5">CONTINUAR →</button>
         </div>
 
-        <form class="form-step" data-step="5" action="https://formsubmit.co/novati@gmail.com" method="POST">
+        <form class="form-step" data-step="5" id="web3forms-form">
             <h2>Podrías dejarnos tus Datos así nos ponemos en contacto?</h2>
             
+            <input type="hidden" name="access_key" value="[TU CLAVE DE ACCESO DE WEB3FORMS]">
+            <input type="hidden" name="redirect" id="form-redirect">
+            <input type="hidden" name="subject" value="Nuevo Turno - Medicina Muller">
+
             <label for="name">Nombre y Apellido:</label>
             <input type="text" id="name" name="Nombre" required>
 
@@ -83,10 +87,9 @@
                 Más Información: 3815239064
             </div>
 
-            <input type="hidden" name="Procedimiento_Interes" id="form-procedimiento">
-            <input type="hidden" name="Detalle_Especifico" id="form-detalle">
-            <input type="hidden" name="Timing" id="form-timing">
-            <input type="hidden" name="_next" id="form-redirect">
+            <input type="hidden" name="1. Procedimiento" id="form-procedimiento">
+            <input type="hidden" name="2. Detalle" id="form-detalle">
+            <input type="hidden" name="3. Timing" id="form-timing">
 
             <button class="prev-step-btn" type="button" data-prev="4">← Regresar</button>
             <button type="submit" id="submit-form" disabled>ENVIAR SOLICITUD →</button>
