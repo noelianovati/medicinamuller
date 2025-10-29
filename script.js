@@ -1,10 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const formSteps = document.querySelectorAll('.form-step');
     const nextButtons = document.querySelectorAll('.next-step-btn');
-    const optionButtons = document.querySelectorAll('.option-btn');
     const submitButton = document.getElementById('submit-form');
     const prevButtons = document.querySelectorAll('.prev-step-btn');
-    const radioGroups = document.querySelectorAll('.button-options-group'); // Grupos de radio buttons
+    const radioGroups = document.querySelectorAll('.button-options-group');
     
     const progressBarFill = document.getElementById('progress-fill');
     
@@ -25,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         nombre: '', correo: '', celular: '', horario_sugerido: ''
     };
 
-    // --- FLUJOS CONDICIONALES SIMPLIFICADOS (Sólo dependen del procedimiento) ---
+    // --- FLUJOS CONDICIONALES SIMPLIFICADOS (Mismo contenido) ---
 
     const flows = {
         specific_detail: {
@@ -83,22 +82,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const prevStepNum = parseInt(prevStep);
                 showStep(prevStepNum);
 
-                // Resetear estados de botones al retroceder
+                // Resetear estado de botones del Paso 2 al retroceder
                 if (prevStepNum === 2) {
-                    step2NextBtn.disabled = true; // Deshabilitar avance hasta seleccionar
+                    step2NextBtn.disabled = true; 
                     document.querySelectorAll('#step2-detail-content button').forEach(btn => {
                         btn.disabled = false;
                         btn.classList.remove('selected');
                     });
                 }
             }
-        });
-    });
-
-    // Maneja selección en grupos de radio (Paso 1 y Paso 4)
-    radioGroups.forEach(group => {
-        group.addEventListener('change', () => {
-            // No hacemos nada aquí, la validación la hace el botón 'CONTINUAR'
         });
     });
 
@@ -128,27 +120,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Maneja botones de opción (Paso 2 y Paso 3)
-    optionButtons.forEach(button => {
+    // Maneja botones de opción (Paso 3)
+    document.querySelectorAll('.form-step[data-step="3"] .option-btn').forEach(button => {
         button.addEventListener('click', (e) => {
-            const currentStepId = parseInt(button.closest('.form-step').dataset.step);
-            
-            if (currentStepId === 3) { // Paso 3: Asistencia (Avance automático)
-                userSelections.asistencia = button.dataset.assist === 'true';
-                showStep(userSelections.asistencia ? 4 : 6); 
-            } 
-            else if (currentStepId === 2) { // Paso 2: Detalle Específico (Fallo corregido)
-                userSelections.detalle = e.currentTarget.dataset.value;
-                step2NextBtn.disabled = false;
-                
-                // Aplicar estilo de seleccionado y deshabilitar otros
-                document.querySelectorAll('#step2-detail-content button').forEach(btn => {
-                    btn.disabled = (btn !== e.currentTarget);
-                    btn.classList.remove('selected'); // Asegura que solo uno tenga el estilo
-                });
-                e.currentTarget.classList.add('selected');
-                e.currentTarget.disabled = false; // El seleccionado debe estar habilitado para estilo
-            }
+            userSelections.asistencia = button.dataset.assist === 'true';
+            showStep(userSelections.asistencia ? 4 : 6); 
         });
     });
     
@@ -165,24 +141,40 @@ document.addEventListener('DOMContentLoaded', () => {
             button.className = 'option-btn';
             button.textContent = opt.text;
             button.dataset.value = opt.value;
-            button.addEventListener('click', optionButtons[0].onclick);
+            // Quitamos el listener individual aquí para usar el Delegado
             step2DetailContent.appendChild(button);
         });
     }
+    
+    // CORRECCIÓN CRÍTICA: Delegado de Eventos para Paso 2
+    step2DetailContent.addEventListener('click', (e) => {
+        const target = e.target.closest('.option-btn');
+        if (target && !target.disabled) {
+            userSelections.detalle = target.dataset.value;
+            step2NextBtn.disabled = false;
+            
+            // Aplicar estilo de seleccionado y deshabilitar otros
+            document.querySelectorAll('#step2-detail-content button').forEach(btn => {
+                btn.disabled = (btn !== target);
+                btn.classList.remove('selected'); 
+            });
+            target.classList.add('selected');
+            target.disabled = false;
+        }
+    });
+
 
     // --- PARTE CLAVE DEL ENVÍO: Actualiza los campos ocultos ---
     function updateHiddenFields() {
-        // Asignar los valores del objeto userSelections a los campos ocultos del formulario
-        formProcedimiento.value = userSelections.procedimiento;
-        formDetalle.value = userSelections.detalle;
-        formTiming.value = userSelections.timing;
+        formProcedimiento.value = document.querySelector('input[name="procedimiento"]:checked').closest('label').textContent.trim();
+        formDetalle.value = document.querySelector('#step2-detail-content button.selected').textContent.trim();
+        formTiming.value = document.querySelector('input[name="timing"]:checked').closest('label').textContent.trim();
         
         // Configurar redirección de FormSubmit
         const userDomain = window.location.origin + window.location.pathname;
-        // La redirección usa la URL del formulario + ?step=7 (éxito)
         formRedirect.value = userDomain + "?step=7";
 
-        // Habilitar el botón de submit (la validación de campos requeridos sigue en checkSubmitValidity)
+        // Habilitar el botón de submit
         const contactInputs = ['name', 'correo', 'celular'];
         contactInputs.forEach(id => {
             document.getElementById(id).addEventListener('input', checkSubmitValidity);

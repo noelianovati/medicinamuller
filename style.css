@@ -117,7 +117,7 @@ h2 {
     font-weight: bold;
 }
 
-/* --- ESTILOS DE BOTONES DE OPCIÓN (Paso 2) --- */
+/* --- ESTILOS DE BOTONES DE OPCIÓN (Paso 2 y Paso 3) --- */
 .option-btn {
     display: block;
     width: 100%;
@@ -130,13 +130,13 @@ h2 {
     box-sizing: border-box;
     text-align: center;
     
-    /* Estilo base como opción */
+    /* Estilo base como opción (Morado sólido) */
     background-color: var(--color-primary);
     color: white;
     border: none;
 }
 
-.option-btn:hover {
+.option-btn:hover:not(:disabled) {
     background-color: var(--color-btn-dark);
 }
 
