@@ -4,10 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const optionButtons = document.querySelectorAll('.option-btn');
     const submitButton = document.getElementById('submit-form');
     const prevButtons = document.querySelectorAll('.prev-step-btn');
+    const radioGroups = document.querySelectorAll('.button-options-group'); // Grupos de radio buttons
     
     const progressBarFill = document.getElementById('progress-fill');
     
-    // Controles del Paso 2 (Detalle Específico, antes era Paso 4)
+    // Controles del Paso 2 (Detalle Específico)
     const step2DetailTitle = document.getElementById('step2-detail-title');
     const step2DetailContent = document.getElementById('step2-detail-content');
     const step2NextBtn = document.getElementById('step2-next-btn');
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const formProcedimiento = document.getElementById('form-procedimiento');
     const formDetalle = document.getElementById('form-detalle');
     const formTiming = document.getElementById('form-timing');
+    const formRedirect = document.getElementById('form-redirect');
 
     let currentStep = 1;
     let userSelections = {
@@ -26,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- FLUJOS CONDICIONALES SIMPLIFICADOS (Sólo dependen del procedimiento) ---
 
     const flows = {
-        // PASO 2: Detalle Específico (Ahora sólo depende de Procedimiento)
         specific_detail: {
             endolift: { title: "Seleccionaste Endolift, ¿podrías indicarme lo siguiente?", options: [
                 { text: "Facial", value: "facial" }, { text: "Corporal", value: "corporal" }, { text: "Consulta", value: "consulta" }
@@ -70,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateProgress();
             
             if (stepNumber === 2) { loadStep2(); }
-            if (stepNumber === 5) { updateHiddenFields(); } // NUEVO: Actualizar campos ocultos antes de la vista final
+            if (stepNumber === 5) { updateHiddenFields(); }
         }
     }
     
@@ -82,12 +83,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 const prevStepNum = parseInt(prevStep);
                 showStep(prevStepNum);
 
+                // Resetear estados de botones al retroceder
                 if (prevStepNum === 2) {
-                    step2NextBtn.disabled = false;
-                    document.querySelectorAll('#step2-detail-content button').forEach(btn => btn.disabled = false);
-                    document.querySelectorAll('#step2-detail-content button').forEach(btn => btn.classList.remove('selected'));
+                    step2NextBtn.disabled = true; // Deshabilitar avance hasta seleccionar
+                    document.querySelectorAll('#step2-detail-content button').forEach(btn => {
+                        btn.disabled = false;
+                        btn.classList.remove('selected');
+                    });
                 }
             }
+        });
+    });
+
+    // Maneja selección en grupos de radio (Paso 1 y Paso 4)
+    radioGroups.forEach(group => {
+        group.addEventListener('change', () => {
+            // No hacemos nada aquí, la validación la hace el botón 'CONTINUAR'
         });
     });
 
@@ -117,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Maneja botones de opción (P2, P3)
+    // Maneja botones de opción (Paso 2 y Paso 3)
     optionButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             const currentStepId = parseInt(button.closest('.form-step').dataset.step);
@@ -126,17 +137,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 userSelections.asistencia = button.dataset.assist === 'true';
                 showStep(userSelections.asistencia ? 4 : 6); 
             } 
-            else if (currentStepId === 2) { // Paso 2: Detalle Específico (ANTES PASO 4)
+            else if (currentStepId === 2) { // Paso 2: Detalle Específico (Fallo corregido)
                 userSelections.detalle = e.currentTarget.dataset.value;
                 step2NextBtn.disabled = false;
                 
                 // Aplicar estilo de seleccionado y deshabilitar otros
                 document.querySelectorAll('#step2-detail-content button').forEach(btn => {
                     btn.disabled = (btn !== e.currentTarget);
-                    btn.classList.remove('selected');
+                    btn.classList.remove('selected'); // Asegura que solo uno tenga el estilo
                 });
                 e.currentTarget.classList.add('selected');
-                e.currentTarget.disabled = false;
+                e.currentTarget.disabled = false; // El seleccionado debe estar habilitado para estilo
             }
         });
     });
@@ -166,6 +177,11 @@ document.addEventListener('DOMContentLoaded', () => {
         formDetalle.value = userSelections.detalle;
         formTiming.value = userSelections.timing;
         
+        // Configurar redirección de FormSubmit
+        const userDomain = window.location.origin + window.location.pathname;
+        // La redirección usa la URL del formulario + ?step=7 (éxito)
+        formRedirect.value = userDomain + "?step=7";
+
         // Habilitar el botón de submit (la validación de campos requeridos sigue en checkSubmitValidity)
         const contactInputs = ['name', 'correo', 'celular'];
         contactInputs.forEach(id => {
@@ -185,8 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
         submitButton.disabled = !allFilled;
     }
     
-    // No necesitamos un listener para el botón de submit, ya que el <form> lo maneja FormSubmit
-
     // --- INICIO ---
     showStep(1);
 });

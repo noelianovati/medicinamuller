@@ -22,7 +22,7 @@
         <div class="form-step active" data-step="1">
             <h2>¿Qué procedimiento te interesa?</h2>
             
-            <div class="procedure-options">
+            <div class="button-options-group">
                 <label><input type="radio" name="procedimiento" value="endolift" required> Endolift (Lifting sin cirugía)</label>
                 <label><input type="radio" name="procedimiento" value="pellets"> Pellets (Terapia de Reemplazo Hormonal)</label>
                 <label><input type="radio" name="procedimiento" value="capilar"> Implante Capilar</label>
@@ -53,7 +53,7 @@
         <div class="form-step" data-step="4">
             <h2>¿Cuándo te gustaría realizarte el procedimiento?</h2>
             
-            <div class="procedure-options">
+            <div class="button-options-group">
                 <label><input type="radio" name="timing" value="urgente" required> Lo antes posible</label>
                 <label><input type="radio" name="timing" value="3meses"> En los próximos 3 meses</label>
                 <label><input type="radio" name="timing" value="6meses"> En los próximos 6 meses</label>
@@ -64,7 +64,7 @@
             <button class="next-step-btn" data-next="5">CONTINUAR →</button>
         </div>
 
-        <form class="form-step" data-step="5" action="https://formsubmit.co/[novati@gmail.com]" method="POST">
+        <form class="form-step" data-step="5" action="https://formsubmit.co/[YOUR_EMAIL_ADDRESS]" method="POST">
             <h2>Podrías dejarnos tus Datos así nos ponemos en contacto?</h2>
             
             <label for="name">Nombre y Apellido:</label>
@@ -86,6 +86,7 @@
             <input type="hidden" name="Procedimiento_Interes" id="form-procedimiento">
             <input type="hidden" name="Detalle_Especifico" id="form-detalle">
             <input type="hidden" name="Timing" id="form-timing">
+            <input type="hidden" name="_next" id="form-redirect">
 
             <button class="prev-step-btn" type="button" data-prev="4">← Regresar</button>
             <button type="submit" id="submit-form" disabled>ENVIAR SOLICITUD →</button>
