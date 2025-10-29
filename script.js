@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextButtons = document.querySelectorAll('.next-step-btn');
     const submitButton = document.getElementById('submit-form');
     const prevButtons = document.querySelectorAll('.prev-step-btn');
-    const radioGroups = document.querySelectorAll('.button-options-group');
     
     const progressBarFill = document.getElementById('progress-fill');
     
@@ -24,8 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         nombre: '', correo: '', celular: '', horario_sugerido: ''
     };
 
-    // --- FLUJOS CONDICIONALES (Mismo contenido) ---
-
+    // --- FLUJOS CONDICIONALES ---
     const flows = {
         specific_detail: {
             endolift: { title: "Seleccionaste Endolift, ¿podrías indicarme lo siguiente?", options: [
@@ -82,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const prevStepNum = parseInt(prevStep);
                 showStep(prevStepNum);
 
+                // Resetear estado de botones al retroceder
                 if (prevStepNum === 2) {
                     step2NextBtn.disabled = true; 
                     document.querySelectorAll('#step2-detail-content button').forEach(btn => {
@@ -96,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- LÓGICA DE NAVEGACIÓN Y DATOS ---
 
-    // Maneja botones de avance
+    // Maneja botones de avance (Paso 1, 4)
     nextButtons.forEach(button => {
         button.addEventListener('click', () => {
             const stepId = parseInt(button.closest('.form-step').dataset.step);
@@ -144,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Delegado de Eventos para Paso 2 (CORRECCIÓN CRÍTICA)
+    // DELEGADO DE EVENTOS para Paso 2 (SOLUCIONA EL PROBLEMA DEL CLIC)
     step2DetailContent.addEventListener('click', (e) => {
         const target = e.target.closest('.option-btn');
         if (target && !target.disabled) {
@@ -154,18 +153,18 @@ document.addEventListener('DOMContentLoaded', () => {
             // Aplicar estilo de seleccionado (clase 'selected') y deshabilitar/actualizar estado
             document.querySelectorAll('#step2-detail-content button').forEach(btn => {
                 btn.disabled = (btn !== target);
-                btn.classList.remove('selected'); 
+                btn.classList.remove('selected');
             });
             target.classList.add('selected');
             target.disabled = false;
         }
     });
 
-
     // --- PARTE CLAVE DEL ENVÍO: Actualiza los campos ocultos ---
     function updateHiddenFields() {
         // Recolectar valores seleccionados
         const selectedProc = document.querySelector('input[name="procedimiento"]:checked').closest('label').textContent.trim();
+        // Usamos el operador ?. para manejar el caso en que no haya nada seleccionado
         const selectedDet = document.querySelector('#step2-detail-content button.selected')?.textContent.trim() || 'No especificado';
         const selectedTiming = document.querySelector('input[name="timing"]:checked')?.closest('label')?.textContent.trim() || 'No especificado';
 
@@ -174,11 +173,11 @@ document.addEventListener('DOMContentLoaded', () => {
         formDetalle.value = selectedDet;
         formTiming.value = selectedTiming;
         
-        // Configurar redirección
+        // Configurar redirección (para mostrar nuestra página de éxito)
         const userDomain = window.location.origin + window.location.pathname;
         formRedirect.value = userDomain + "?step=7";
 
-        // Habilitar el botón de submit
+        // Habilitar botón de submit
         const contactInputs = ['name', 'correo', 'celular'];
         contactInputs.forEach(id => {
             document.getElementById(id).addEventListener('input', checkSubmitValidity);
@@ -186,11 +185,20 @@ document.addEventListener('DOMContentLoaded', () => {
         checkSubmitValidity(); 
     }
 
-    // --- Lógica de Envío Web3Forms ---
+    // --- Lógica Paso 5 (Datos de Contacto y Envío) ---
+    function checkSubmitValidity() {
+        const contactInputs = ['name', 'correo', 'celular'];
+        const allFilled = contactInputs.every(id => {
+            const input = document.getElementById(id);
+            return input.value.trim() !== '';
+        });
+        submitButton.disabled = !allFilled;
+    }
+    
+    // Envío a Web3Forms
     document.getElementById('web3forms-form').addEventListener('submit', async function (e) {
         e.preventDefault();
         
-        // Deshabilitar botón para evitar doble click
         submitButton.disabled = true;
         submitButton.textContent = 'Enviando...';
         
@@ -206,33 +214,20 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (response.ok) {
-                // Éxito: Mostrar pantalla de éxito (Paso 7)
-                showStep(7);
+                showStep(7); // Éxito
             } else {
-                // Fallo: Mostrar un mensaje de error y re-habilitar
                 console.error('Error de envío:', response.statusText);
                 alert('Hubo un error al enviar el formulario. Por favor, inténtalo de nuevo.');
                 submitButton.disabled = false;
                 submitButton.textContent = 'ENVIAR SOLICITUD →';
             }
         } catch (error) {
-            // Fallo de red
             console.error('Error de red:', error);
             alert('Error de conexión. Por favor, revisa tu conexión a internet.');
             submitButton.disabled = false;
             submitButton.textContent = 'ENVIAR SOLICITUD →';
         }
     });
-
-    // --- Lógica Paso 5 (Validación de Contacto) ---
-    function checkSubmitValidity() {
-        const contactInputs = ['name', 'correo', 'celular'];
-        const allFilled = contactInputs.every(id => {
-            const input = document.getElementById(id);
-            return input.value.trim() !== '';
-        });
-        submitButton.disabled = !allFilled;
-    }
     
     // --- INICIO ---
     showStep(1);
