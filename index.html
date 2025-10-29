@@ -34,31 +34,23 @@
         </div>
 
         <div class="form-step" data-step="2">
-            <h2 id="step2-gender-title"></h2>
-            <div id="step2-gender-content">
+            <h2 id="step2-detail-title"></h2>
+            <div id="step2-detail-content">
                 </div>
             <button class="prev-step-btn" data-prev="1">← Regresar</button>
             <button class="next-step-btn" data-next="3" id="step2-next-btn" disabled>CONTINUAR →</button>
         </div>
-
+        
         <div class="form-step" data-step="3">
             <h2>¿Puedes asistir a nuestra clínica?</h2>
             <p>Puedes asistir a nuestra clínica en **Galería Nodo, Yerba Buena**?</p>
             
             <button class="prev-step-btn" data-prev="2">← Regresar</button>
             <button class="option-btn" data-next="4" data-assist="true">Sí, puedo asistir</button>
-            <button class="option-btn" data-next="7" data-assist="false">No, me queda muy lejos</button> 
+            <button class="option-btn" data-next="6" data-assist="false">No, me queda muy lejos</button> 
         </div>
 
         <div class="form-step" data-step="4">
-            <h2 id="step4-detail-title"></h2>
-            <div id="step4-detail-content">
-                </div>
-            <button class="prev-step-btn" data-prev="3">← Regresar</button>
-            <button class="next-step-btn" data-next="5" id="step4-next-btn" disabled>CONTINUAR →</button>
-        </div>
-        
-        <div class="form-step" data-step="5">
             <h2>¿Cuándo te gustaría realizarte el procedimiento?</h2>
             
             <div class="procedure-options">
@@ -68,40 +60,44 @@
                 <label><input type="radio" name="timing" value="explorando"> Solo estoy explorando opciones</label>
             </div>
             
-            <button class="prev-step-btn" data-prev="4">← Regresar</button>
-            <button class="next-step-btn" data-next="6">CONTINUAR →</button>
+            <button class="prev-step-btn" data-prev="3">← Regresar</button>
+            <button class="next-step-btn" data-next="5">CONTINUAR →</button>
         </div>
 
-        <div class="form-step" data-step="6">
+        <form class="form-step" data-step="5" action="https://formsubmit.co/[novati@gmail.com]" method="POST">
             <h2>Podrías dejarnos tus Datos así nos ponemos en contacto?</h2>
             
             <label for="name">Nombre y Apellido:</label>
-            <input type="text" id="name" required>
+            <input type="text" id="name" name="Nombre" required>
 
             <label for="correo">Correo:</label>
-            <input type="email" id="correo" required>
+            <input type="email" id="correo" name="Email" required>
 
             <label for="celular">Celular:</label>
-            <input type="text" id="celular" placeholder="Ej: 381XXXXXXX" required>
+            <input type="text" id="celular" name="Celular" placeholder="Ej: 381XXXXXXX" required>
 
             <label for="horario-sugerido">Horarios Sugerido para contacto:</label>
-            <input type="text" id="horario-sugerido">
+            <input type="text" id="horario-sugerido" name="Horario_Sugerido">
 
             <div class="info-box">
                 Más Información: 3815239064
             </div>
 
-            <button class="prev-step-btn" data-prev="5">← Regresar</button>
-            <button type="submit" id="submit-form" disabled>ENVIAR SOLICITUD →</button>
-        </div>
+            <input type="hidden" name="Procedimiento_Interes" id="form-procedimiento">
+            <input type="hidden" name="Detalle_Especifico" id="form-detalle">
+            <input type="hidden" name="Timing" id="form-timing">
 
-        <div class="form-step" data-step="7">
+            <button class="prev-step-btn" type="button" data-prev="4">← Regresar</button>
+            <button type="submit" id="submit-form" disabled>ENVIAR SOLICITUD →</button>
+        </form>
+
+        <div class="form-step" data-step="6">
             <h2>Gracias por tu interés.</h2>
-            <p>Entendemos que la clínica te queda lejos. Te enviaremos información general sobre los procedimientos solicitados al correo o WhatsApp que nos indiques en el paso de contacto si decides volver atrás.</p>
+            <p>Entendemos que la clínica te queda lejos. Te enviaremos información general sobre los procedimientos solicitados al correo o WhatsApp que nos indiques si decides volver y dejar tus datos.</p>
             <button class="prev-step-btn" data-prev="3">Volver a Intentar</button>
         </div>
 
-        <div class="form-step" data-step="8">
+        <div class="form-step" data-step="7">
             <h2>¡Solicitud Enviada!</h2>
             <p>Gracias por completar el formulario. El equipo de Medicina Müller se pondrá en contacto contigo a la brevedad.</p>
             <a href="/" class="home-btn">Volver al inicio</a>
